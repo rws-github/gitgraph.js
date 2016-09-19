@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>GitGraph.js example page</title>
+    <link rel="stylesheet" type="text/css" href="../src/gitgraph.css" />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <table>
+      <tr>
+        <td>
+          <canvas id="gitGraph"></canvas>
+        </td>
+        <td>
+          <pre style="float: right;">
+It really looks like:
+1
+|\
+2 3
+| |\
+4 5 6
+| |/
+7 8
+|/
+9
+          </pre>
+        </td>
+      </tr>
+    </table>
+    <pre>
+      This is a sample of rendering a plan with nested parallelism where the max parallel tasks is only 3.
+      This rendering is based on git revision history and is using a Javascript library called Gitgraph.js.
+      
+      Things I would change that are not supported:
+      - The white circles are merges which we ideally don't want to show. The arrow should flow into the task after the white circle.
+      - We want to be able to flow out and in to a circle with many lines.
+
+      What might be difficult:
+      - Arbitrary dependencies (we'd have to do crazy lines)
+      - Large numbers of parallel tasks tak up horizontal space
+    </pre>
+    <br/>
+    <br/>
+    <br/>
+    <canvas id="gitGraph2"></canvas>
+    <pre>
+    1 task, then 4 parallel, then joining into another task
+    </pre>
+    <script src="../src/gitgraph.js"></script>
+    <script src="deployment-plan.js"></script>
+  </body>
+</html>
