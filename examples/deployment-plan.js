@@ -1,5 +1,5 @@
 var graphConfig = new GitGraph.Template({
-    colors: [ "#979797", "#008fb5", "#f1c109" ],
+    colors: [ "#dfe3e6", "#3d70b2", "#ff5050", "#008571" ],
     branch: {
         color: "#000000",
         lineWidth: 3,
@@ -28,8 +28,7 @@ var graphConfig = new GitGraph.Template({
         }
     },
     arrow: {
-        size: 8,
-        offset: 3
+        active: false
     }
 });
 
@@ -49,13 +48,12 @@ var drawGraph1 = function() {
     b1.commit("Task 2");
     b2.commit("Task 3");
     var b3 = b2.branch("3"); // New branch from develop
+    b1.commit("Task 4");
     b2.commit("Task 5");
     b3.commit("Task 6");
     b3.merge(b2, { message: " ", color: "white", size: 1 });
-    b2.commit("Task 8");
-    b1.commit("Task 4");
     b1.commit("Task 7");
-
+    b2.commit("Task 8");
     b2.merge(b1, { message: " ", color: "white", size: 1 });
     b1.commit("Task 9");
 }

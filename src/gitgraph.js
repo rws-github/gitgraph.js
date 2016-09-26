@@ -679,6 +679,15 @@
     options.color = options.color || this.template.commit.color || this.template.colors[ columnIndex ];
     options.parent = this.parent;
     options.parentCommit = options.parentCommit || this.commits.slice( -1 )[ 0 ];
+    
+    // ========================================================================
+    // rws - for the commit after a merge commit, shift it up in place of the merge commit
+    var adjustForMerge = this.parent.lastCommitType === 'mergeCommit'
+    if (adjustForMerge) {
+      this.parent.commitOffsetY -= this.template.commit.spacingY;
+      options.y += this.template.commit.spacingY; // spacingY is negative
+    }
+    // ========================================================================
 
     // Special compact mode
     if ( this.parent.mode === "compact"
@@ -712,7 +721,7 @@
     var previousCommitPosition = previousCommit.x + previousCommit.y;
     var isCommitAtSamePlaceThanPreviousOne = (commitPosition === previousCommitPosition);
 
-    if ( isCommitAtSamePlaceThanPreviousOne ) {
+    if ( isCommitAtSamePlaceThanPreviousOne && !adjustForMerge ) {
       this.parent.commitOffsetX += this.template.commit.spacingX;
       this.parent.commitOffsetY += this.template.commit.spacingY;
       options.x = this.offsetX - this.parent.commitOffsetX;
@@ -774,6 +783,11 @@
       commit.detail.style.display = "block";
       this.parent.commitOffsetY -= commit.detail.clientHeight - 40;
     }
+
+    // ========================================================================
+    // rws - track last commit type
+    this.parent.lastCommitType = options.type;
+    // ========================================================================
 
     // Auto-render
     this.parent.render();
@@ -986,7 +1000,7 @@
     this.tagFont = options.tagFont || this.template.commit.tag.font;
     this.displayTagBox = booleanOptionOr( options.displayTagBox, true );
     this.sha1 = options.sha1 || (Math.random( 100 )).toString( 16 ).substring( 3, 10 );
-    this.message = options.message || "He doesn't like George Michael! Boooo!";
+    this.message = options.message;
     this.arrowDisplay = options.arrowDisplay;
     this.messageDisplay = booleanOptionOr( options.messageDisplay, this.template.commit.message.display );
     this.messageAuthorDisplay = booleanOptionOr( options.messageAuthorDisplay, this.template.commit.message.displayAuthor );
@@ -1018,6 +1032,13 @@
    * @this Commit
    **/
   Commit.prototype.render = function () {
+    // ========================================================================
+    // rws - remove rendering of merge commits
+    //     - seems to cause the top-most dot to be cut off a bit
+    if (this.type === 'mergeCommit') {
+      return;
+    }
+    // ========================================================================
 
     // Label
     if ( this.showLabel ) {
